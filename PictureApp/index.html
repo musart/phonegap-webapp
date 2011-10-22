@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=320; user-scalable=no" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>ContactApp</title>
+	  <link rel="stylesheet" href="master.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	  <script type="text/javascript" charset="utf-8" src="phonegap-1.0.0rc2.js"></script>
+      <script text="text/javascript">
+
+function init() {
+  //document.addEventListener("deviceready", function() {alert("phonegap is ready");isReady = true;};, true);
+  createButton();
+  createPictureList(4, 4);
+}
+
+function createButton() {
+}
+
+function getPicture(row, col) {
+  // get 'tr' node
+  var currentNode = document.getElementById("PictureList_" + row + "_" + col);
+
+  // remove child
+  currentNode.removeChild(currentNode.getElementsByTagName('a')[0]);
+  
+  // add child
+  currentNode.appendChild(document.createTextNode("Loading"));
+            
+  navigator.camera.getPicture(
+    //cameraSuccess,
+    function(imageData) {
+      // get 'tr' node
+      var currentNode = document.getElementById("PictureList_" + row + "_" + col);
+      
+      // remove child
+      currentNode.removeChild(currentNode.firstChild);
+
+      // append child
+      var image = document.createElement('img');
+      image.setAttribute("style", "height:80px; width:80px");
+      image.src = "data:image/jpeg;base64," + imageData;
+      currentNode.appendChild(image);
+    },
+    function(message) {
+      alert(message);
+      // get 'tr' node
+      var currentNode = document.getElementById("PictureList_" + row + "_" + col);
+      
+      // remove child
+      currentNode.removeChild(currentNode.firstChild);
+      
+      // append child
+      currentNode.appendChild(document.createTextNode("Loading Error"));
+    },
+    {
+      quality: 30, 
+      destinationType: Camera.DestinationType.DATA_URL,
+      sourceType: Camera.PictureSourceType.PHOTOLIBRARY
+    }
+  );
+}
+
+function createPictureList(row, col) {
+  var table = document.createElement("table");
+  for(var i=0;i<col;i++) {
+    var tr = document.createElement("tr");
+    table.appendChild(tr);
+    
+    for(var j=0;j<row;j++) {
+      var td = document.createElement("td");
+      td.setAttribute("id", "PictureList_" + i + "_" + j);
+      td.setAttribute("style", "height:80px; width:80px");
+      
+      var aTag = document.createElement("a");
+      aTag.href = "#";
+      aTag.setAttribute("onclick", "getPicture(" + i + ", " + j + ");");
+      aTag.appendChild(document.createTextNode("Get Picture"));
+      td.appendChild(aTag);
+      tr.appendChild(td);
+    }
+  }
+  
+  document.getElementById("PictureListBody").appendChild(table);
+}
+
+      </script>
+  </head>
+  <body onload="init();">
+    <h1>Picture</h1>
+    <div id=PictureListBody></div>
+  </body>
+</html>

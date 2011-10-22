@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=320; user-scalable=no" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <title>ContactApp</title>
+	<link rel="stylesheet"  href="lib/jquery.mobile-1.0b2.css" /> 
+	  <script src="lib/jquery-1.6.2.js"></script> 
+	  <script src="lib/jquery.mobile-1.0b2.js"></script> 
+	  <script type="text/javascript" charset="utf-8" src="phonegap-1.0.0rc2.js"></script>
+	  <script type="text/javascript">
+function init() {
+    // the next line makes it impossible to see Contacts on the HTC Evo since it
+    // doesn't have a scroll button
+    // document.addEventListener("touchmove", preventBehavior, false);
+    document.addEventListener("deviceready", getContactList, true);
+}
+
+function getContactList() {
+	//alert("aaaa");
+	navigator.contacts.find(
+        ['id', 'name', 'emails', 'phoneNumbers', 'addresses'],
+        function(deviceContacts) {
+            //loop over deviceContacts and create Contact model instances
+            var contacts = [];
+            for (var i = 0; i < deviceContacts.length; i++) {
+                var deviceContact = deviceContacts[ i ];
+                var contact = new Object({
+                    id: deviceContact.id,
+                    givenName: deviceContact.name.givenName,
+                    familyName: deviceContact.name.familyName,
+                    emails: deviceContact.emails,
+                    phoneNumbers: deviceContact.phoneNumbers
+                });
+                contact.deviceContact = deviceContact;
+                contacts.push(contact);
+            }
+            
+            // 리스트 뷰 업데이트 하는 코드
+            var list = $('#listviewArea');
+            list.html("");
+            $.each(contacts, function(key, val) {
+                list.append($(document.createElement('li')).html(val.givenName));
+            });
+            list.listview("destroy").listview();
+        },
+        function (e) { console.log('Error fetching contacts'); },
+        {multiple: true}
+    );
+}
+	  </script>  
+
+  </head>
+  <body onload="javascript:init();">
+    <div data-role="header" data-position="fixed"> 
+    <h1>Contacts</h1> 
+    </div> 
+    
+	<div data-role="content"> 
+		<ul data-role="listview" data-inset="true" id="listviewArea"> 
+			<li><a href="index.html">Acura</a></li> 
+			<li><a href="index.html">Audi</a></li> 
+			<li><a href="index.html">BMW</a></li> 
+		</ul> 
+	</div>		
+ 
+  </body>
+</html>

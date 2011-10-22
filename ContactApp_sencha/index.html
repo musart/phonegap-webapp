@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>ContactApp</title>
+      <script type="text/javascript" src="lib/sencha-touch.js"></script>
+	  <link href="lib/sencha-touch.css" rel="stylesheet" type="text/css" />
+	  
+	  <script type="text/javascript" src="app/app.js"></script>
+	  <script type="text/javascript" src="app/models/Contact.js"></script>
+	  <script type="text/javascript" src="app/views/ContactsList.js"></script>
+	  <script type="text/javascript" src="app/views/Viewport.js"></script>
+	  
+	  <script type="text/javascript" charset="utf-8" src="phonegap-1.0.0rc2.js"></script>
+	  <script type="text/javascript">
+	        if(navigator.userAgent.toLowerCase().indexOf('chrome') != -1) {
+	            device = {};
+                contactApp.mainLaunch;
+	        } else {
+                document.addEventListener("deviceready", contactApp.mainLaunch, false);
+            }
+      </script>
+  </head>
+  <body> 
+  </body>
+</html>
