@@ -17,14 +17,10 @@
           var s = document.createElement('script');
           s.src = "js/phonegap-1.0.0.android.js";
           s.type = 'text/javascript';
+          s.onload = init;
           document.getElementsByTagName('head')[0].appendChild(s);
       }
-      
-      </script>
-      <!--
-      <script type="text/javascript" src="js/phonegap-1.0.0.android.js" />
-      -->
-      <script type="text/javascript">
+
 
 //var watchId;
 var heading = 0;
@@ -33,12 +29,20 @@ function init() {
   console.log("init is called");
   if(typeof PhoneGap === "undefined") {
     setTimeout(init, 1);
-    console.log("PhoneGap is not defined");
-  } else {
-    console.log("PhoneGap is defined");
+    console.log("PhoneGap is not defined ");
     document.addEventListener("deviceready", 
       function() {
-        console.log("phonegap is ready");
+        console.log("phonegap is ready 00");
+        isReady = true;
+        var watchId = navigator.compass.watchHeading(compassSuccess, compassError, {frequency: 1000});
+      }, 
+      false
+    );
+  } else {
+    console.log("PhoneGap is defined__ : " + PhoneGap.available);
+    document.addEventListener("deviceready", 
+      function() {
+        console.log("phonegap is ready 11");
         isReady = true;
         var watchId = navigator.compass.watchHeading(compassSuccess, compassError, {frequency: 1000});
       }, 
@@ -271,7 +275,8 @@ function drawHand(radians, opts) {
 	  </script>  
 
   </head>
-  <body onload="init();">
+  <!--<body onload="init();">-->
+  <body>
     <h1>Compass</h1>
     <canvas id=can width=300 height=300 style="position:relative; border:1px solid #000;"></canvas>
   </body>
