@@ -1,68 +1,115 @@
 <!DOCTYPE HTML>
 <html>
-  <head>
-    <meta name="viewport" content="width=320; user-scalable=no" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>ContactApp</title>
-	<link rel="stylesheet"  href="lib/jquery.mobile-1.0b2.css" /> 
-	  <script src="lib/jquery-1.6.2.js"></script> 
-	  <script src="lib/jquery.mobile-1.0b2.js"></script> 
-	  <script type="text/javascript" charset="utf-8" src="phonegap-1.0.0rc2.js"></script>
-	  <script type="text/javascript">
-function init() {
-    // the next line makes it impossible to see Contacts on the HTC Evo since it
-    // doesn't have a scroll button
-    // document.addEventListener("touchmove", preventBehavior, false);
-    document.addEventListener("deviceready", getContactList, true);
-}
-
-function getContactList() {
-	//alert("aaaa");
-	navigator.contacts.find(
-        ['id', 'name', 'emails', 'phoneNumbers', 'addresses'],
-        function(deviceContacts) {
-            //loop over deviceContacts and create Contact model instances
+	<head>
+		<meta name="viewport" content="width=320; user-scalable=no" />
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+		<title>ContactApp</title>
+		
+		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+		<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+		<script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+		<script type="text/javascript">
             var contacts = [];
-            for (var i = 0; i < deviceContacts.length; i++) {
-                var deviceContact = deviceContacts[ i ];
-                var contact = new Object({
-                    id: deviceContact.id,
-                    givenName: deviceContact.name.givenName,
-                    familyName: deviceContact.name.familyName,
-                    emails: deviceContact.emails,
-                    phoneNumbers: deviceContact.phoneNumbers
-                });
-                contact.deviceContact = deviceContact;
-                contacts.push(contact);
+            
+            function init() {
+                document.addEventListener("deviceready", getContactList, true);
             }
             
-            // ����Ʈ �� ������Ʈ �ϴ� �ڵ�
-            var list = $('#listviewArea');
-            list.html("");
-            $.each(contacts, function(key, val) {
-                list.append($(document.createElement('li')).html(val.givenName));
-            });
-            list.listview("destroy").listview();
-        },
-        function (e) { console.log('Error fetching contacts'); },
-        {multiple: true}
-    );
-}
-	  </script>  
+            function getContactList() {
+                navigator.contacts.find(
+					['id', 'name', 'emails', 'phoneNumbers', 'addresses'],
+					function(deviceContacts) {
+						//loop over deviceContacts and create Contact model instances
+						for (var i = 0; i < deviceContacts.length; i++) {
+							var deviceContact = deviceContacts[ i ];
+							var contact = new Object({
+								id: deviceContact.id,
+								givenName: deviceContact.name.givenName,
+								familyName: deviceContact.name.familyName,
+								emails: deviceContact.emails,
+								phoneNumbers: deviceContact.phoneNumbers
+							});
+							contact.deviceContact = deviceContact;
+							contacts.push(contact);
+						}
+                                    
+						// 
+						var list = $('#content-contactlist');
+						list.html("");
+						$.each(contacts, function(key, val) {
+							var aTag = document.createElement("a");
+							aTag.href = "javascript:showContactDetailPage("+val.id+")";
+							aTag.appendChild(document.createTextNode("["+val.id+"]"+val.familyName+" "+val.givenName));
+							list.append($(document.createElement('li')).append(aTag));
+						});
+						list.listview("destroy").listview();
+					},
+					function (e) {
+						alert('Error fetching contacts');
+					},
+					{multiple: true}
+				);
+			}
+            
+			function showContactDetailPage(contactId) {
+				console.log(contactId);
+				
+				$.mobile.changePage("#page-contactdetail", "none", false, true);
+				
+				$.each(contacts, function(key, val) {
+                   
+					if(val != "" && val.id == parseInt(contactId)) {
+						var list = $('#content-contactdetail');
+						list.html("");
+                       
+						list.append($(document.createElement('li')).html("연락처 ID : " + val.id));
+						if(val.familyName != undefined || val.givenName != undefined) {
+							list.append($(document.createElement('li')).html("이름 : " + val.familyName + " " + val.givenName));
+						}
+						if(val.phoneNumbers != undefined) {
+							for (var i in val.phoneNumbers) {
+								list.append($(document.createElement('li')).html(val.phoneNumbers[i].type + " : " + val.phoneNumbers[i].value));
+							}
+						}
+						if(val.emails != undefined) {
+							for (var i in val.emails) {
+								list.append($(document.createElement('li')).html(val.emails[i].type + " : " + val.emails[i].value));
+							}
+						}
+                       
+						list.listview("destroy").listview();
+					}
+				});
+			}
+		</script>
+	</head>
+	<body onload="init();">
+        
+        <div data-role="page" id="page-contactlist">
+            <div data-role="header" data-position="fixed"> 
+                <h1>연락처 어플리케이션</h1> 
+            </div> 
+            
+            <div data-role="content"> 
+                <ul data-role="listview" data-inset="true" id="content-contactlist">
+                    로딩중.
+                </ul> 
+            </div>		
+        </div>
+        
+        <div data-role="page" id="page-contactdetail">
+            <div data-role="header" data-position="fixed"> 
+                <a href="#page-contactlist" data-direction="reverse" data-role="button">이전</a>
+                <h1>연락처 상세정보</h1> 
+            </div> 
+            
+            <div data-role="content"> 
+                <ul data-role="listview" data-inset="true" id="content-contactdetail">
+                    로딩중.
+                </ul> 
+            </div>		
+        </div>
 
-  </head>
-  <body onload="javascript:init();">
-    <div data-role="header" data-position="fixed"> 
-    <h1>Contacts</h1> 
-    </div> 
-    
-	<div data-role="content"> 
-		<ul data-role="listview" data-inset="true" id="listviewArea"> 
-			<li><a href="index.html">Acura</a></li> 
-			<li><a href="index.html">Audi</a></li> 
-			<li><a href="index.html">BMW</a></li> 
-		</ul> 
-	</div>		
- 
-  </body>
+	</body>
 </html>
