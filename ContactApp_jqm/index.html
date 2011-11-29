@@ -18,35 +18,22 @@
             
             function getContactList() {
                 navigator.contacts.find(
-					['id', 'name', 'emails', 'phoneNumbers', 'addresses'],
+					['id', 'name', 'emails', 'phoneNumbers'],
 					function(deviceContacts) {
-						//loop over deviceContacts and create Contact model instances
-						for (var i = 0; i < deviceContacts.length; i++) {
-							var deviceContact = deviceContacts[ i ];
-							var contact = new Object({
-								id: deviceContact.id,
-								givenName: deviceContact.name.givenName,
-								familyName: deviceContact.name.familyName,
-								emails: deviceContact.emails,
-								phoneNumbers: deviceContact.phoneNumbers
-							});
-							contact.deviceContact = deviceContact;
-							contacts.push(contact);
-						}
-                                    
-						// 
+						contacts = deviceContacts;
+
 						var list = $('#content-contactlist');
 						list.html("");
 						$.each(contacts, function(key, val) {
 							var aTag = document.createElement("a");
 							aTag.href = "javascript:showContactDetailPage("+val.id+")";
-							aTag.appendChild(document.createTextNode("["+val.id+"]"+val.familyName+" "+val.givenName));
+							aTag.appendChild(document.createTextNode("["+val.id+"]"+val.name.familyName+" "+val.name.givenName));
 							list.append($(document.createElement('li')).append(aTag));
 						});
 						list.listview("destroy").listview();
 					},
 					function (e) {
-						alert('Error fetching contacts');
+						alert('에러 발생');
 					},
 					{multiple: true}
 				);
@@ -55,7 +42,7 @@
 			function showContactDetailPage(contactId) {
 				console.log(contactId);
 				
-				$.mobile.changePage("#page-contactdetail", "none", false, true);
+				$.mobile.changePage("#page-contactdetail", "none");
 				
 				$.each(contacts, function(key, val) {
                    
@@ -64,8 +51,8 @@
 						list.html("");
                        
 						list.append($(document.createElement('li')).html("연락처 ID : " + val.id));
-						if(val.familyName != undefined || val.givenName != undefined) {
-							list.append($(document.createElement('li')).html("이름 : " + val.familyName + " " + val.givenName));
+						if(val.name.familyName != undefined || val.name.givenName != undefined) {
+							list.append($(document.createElement('li')).html("이름 : " + val.name.familyName + " " + val.name.givenName));
 						}
 						if(val.phoneNumbers != undefined) {
 							for (var i in val.phoneNumbers) {
