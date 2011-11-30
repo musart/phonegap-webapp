@@ -40,8 +40,6 @@
 			}
             
 			function showContactDetailPage(contactId) {
-				console.log(contactId);
-				
 				$.mobile.changePage("#page-contactdetail", "none");
 				
 				$.each(contacts, function(key, val) {
@@ -66,6 +64,7 @@
 						}
                        
 						list.listview("destroy").listview();
+						return;
 					}
 				});
 			}
