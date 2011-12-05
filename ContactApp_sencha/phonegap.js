@@ -5,6 +5,7 @@
  * Copyright (c) 2005-2010, Nitobi Software Inc.
  * Copyright (c) 2010-2011, IBM Corporation
  */
+console.log("phonegap.js for android START");
 
 if (typeof PhoneGap === "undefined") {
 
@@ -365,6 +366,7 @@ PhoneGap.Channel.join(function() {
     // Fire onDeviceReady event once all constructors have run and PhoneGap info has been
     // received from native side, and any user defined initialization channels.
     PhoneGap.Channel.join(function() {
+    console.log("phonegap device ready");
         PhoneGap.onDeviceReady.fire();
 
         // Fire the onresume event, since first one happens before JavaScript is loaded
@@ -1979,10 +1981,12 @@ var Device = function() {
     this.name = null;
     this.uuid = null;
     this.phonegap = null;
+    console.log("Device is called");
 
     var me = this;
     this.getInfo(
         function(info) {
+        console.log("Device.successcallback is called");
             me.available = true;
             me.platform = info.platform;
             me.version = info.version;
@@ -2056,7 +2060,9 @@ Device.prototype.exitApp = function() {
 };
 
 PhoneGap.addConstructor(function() {
+console.log("Device addConstructor");
     if (typeof navigator.device === "undefined") {
+    console.log("Device addConstructor undefined");
         navigator.device = window.device = new Device();
     }
 });
@@ -4364,4 +4370,4 @@ PhoneGap.addConstructor(function() {
 });
 }
 
-
+console.log("phonegap.js for android END");

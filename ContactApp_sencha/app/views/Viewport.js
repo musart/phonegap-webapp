@@ -1,3 +1,4 @@
+console.log("views/Viewport.js is loaded");
 contactApp.views.Viewport = Ext.extend(Ext.Panel, {
     fullscreen: true,
     layout: 'card',
@@ -7,16 +8,14 @@ contactApp.views.Viewport = Ext.extend(Ext.Panel, {
         console.log("contactApp.views.Viewport initComponent START");
         console.log(contactApp.mainLaunch);
         Ext.apply(contactApp.views, {
-            contactsList: new contactApp.views.ContactsList(),
-            //contactDetail: new contactApp.views.ContactDetail(),
-            //contactForm: new contactApp.views.ContactForm()
+            contactList: new contactApp.views.ContactList(),
+            contactDetail: new contactApp.views.ContactDetail()
         });
         //put instances of cards into viewport
         Ext.apply(this, {
             items: [
-                contactApp.views.contactsList,
-                //contactApp.views.contactDetail,
-                //contactApp.views.contactForm,
+                contactApp.views.contactList,
+                contactApp.views.contactDetail
             ]
         });
         contactApp.views.Viewport.superclass.initComponent.apply(this, arguments);

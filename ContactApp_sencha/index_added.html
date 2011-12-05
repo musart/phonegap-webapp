@@ -1,0 +1,273 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>ContactApp</title>
+      <script type="text/javascript" src="lib/sencha-touch.js"></script>
+	  <link href="lib/sencha-touch.css" rel="stylesheet" type="text/css" />
+	  <!--
+	  <script type="text/javascript" src="app/contactApp.js"></script>
+	  <script type="text/javascript" src="app/controllers/contacts.js"></script>
+	  <script type="text/javascript" src="app/models/Contact.js"></script>
+	  <script type="text/javascript" src="app/views/ContactList.js"></script>
+	  <script type="text/javascript" src="app/views/ContactDetail.js"></script>
+	  <script type="text/javascript" src="app/views/Viewport.js"></script>
+	  -->
+	  
+	  <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+	  <script>
+Ext.regApplication({
+    name: 'contactApp',
+    launch: function() {
+        this.launched = true;
+        this.mainLaunch();
+    },
+    mainLaunch: function() {
+        if (!device || !this.launched) {return;}
+        this.views.viewport = new this.views.Viewport();
+    }
+});
+
+/***
+ * controllers/contacts.js
+ */
+contactApp.controllers.contacts = new Ext.Controller({
+	// ContactDetail.js의 back에 연결된다.
+    index: function(options) {
+        contactApp.views.viewport.setActiveItem(
+            contactApp.views.contactList, options.animation
+        );
+    },
+    // ContactList.js의 각 아이템 연결된다.
+    show: function(options) {
+    console.log("controller::show() is called");
+	    var id = parseInt(options.id);
+		var contact = contactApp.stores.contacts.getById(id);
+	    if (contact) {
+	        contactApp.views.contactDetail.refreshContactData(contact);
+	        contactApp.views.viewport.setActiveItem(
+	            contactApp.views.contactDetail, options.animation
+	        );
+	    }
+    }
+});
+
+/**
+ * models/Contact.js
+ */
+Ext.data.ProxyMgr.registerType("contactstorage",
+    Ext.extend(Ext.data.Proxy, {
+        create: function(operation, callback, scope) {},
+        update: function(operation, callback, scope) {},
+        destroy: function(operation, callback, scope) {},
+        read: function(operation, callback, scope) {
+		    var thisProxy = this;
+		    if(!Ext.is.Phone) {
+	            var contacts = [];
+                contacts.push(new thisProxy.model({
+                    id: 1,
+                    givenName: "Phone",
+                    familyName: "Gap",
+                    emails: [{"type":"work", "value":"sales@nitobi.com"},
+                    			{"type":"home", "value":"sales@nitobi.com"}],
+                    phoneNumbers: [{"type":"work", "value":"1-866-632-2777"},
+                    			{"type":"fax", "value":"(604) 357-1678"}]
+                }));
+                contacts.push(new thisProxy.model({
+                    id: 10,
+                    givenName: "Nitobi",
+                    familyName: "",
+                    phoneNumbers: [{"type":"work", "value":"1-866-632-2777"}]
+                }));
+                
+	            operation.resultSet = new Ext.data.ResultSet({
+	                records: contacts,
+	                total  : contacts.length,
+	                loaded : true
+	            });
+	            //announce success
+	            operation.setSuccessful();
+	            operation.setCompleted();
+	            //finish with callback
+	            if (typeof callback == "function") {
+	                callback.call(scope || thisProxy, operation);
+	            }
+		    } else {
+			    navigator.contacts.find(
+			        ['id', 'name', 'emails', 'phoneNumbers'],
+			        function(deviceContacts) {
+			            //loop over deviceContacts and create Contact model instances
+			            var contacts = [];
+			            for (var i = 0; i < deviceContacts.length; i++) {
+			                var deviceContact = deviceContacts[ i ];
+			                var contact = new thisProxy.model({
+			                    id: deviceContact.id,
+			                    givenName: deviceContact.name.givenName,
+			                    familyName: deviceContact.name.familyName,
+			                    emails: deviceContact.emails,
+			                    phoneNumbers: deviceContact.phoneNumbers
+			                });
+			                contact.deviceContact = deviceContact;
+			                contacts.push(contact);
+			            }
+			            //return model instances in a result set
+			            operation.resultSet = new Ext.data.ResultSet({
+			                records: contacts,
+			                total  : contacts.length,
+			                loaded : true
+			            });
+			            //announce success
+			            operation.setSuccessful();
+			            operation.setCompleted();
+			            //finish with callback
+			            if (typeof callback == "function") {
+			                callback.call(scope || thisProxy, operation);
+			            }
+			        },
+			        function (e) { console.log('Error fetching contacts'); },
+			        {multiple: true}
+			    );
+		    }
+        }
+    })
+);
+
+contactApp.models.Contact = Ext.regModel("contactApp.models.Contact", {
+    fields: [
+        {name: "id", type: "int"},
+        {name: "givenName", type: "string"},
+        {name: "familyName", type: "string"},
+        {name: "emails", type: "auto"},
+        {name: "phoneNumbers", type: "auto"},
+    ],
+    proxy: {
+        type: "contactstorage"
+    }
+});
+
+contactApp.stores.contacts = new Ext.data.Store({
+    model: "contactApp.models.Contact"
+});
+
+/**
+ * views/ContactDetail.js
+ */
+contactApp.views.ContactDetail = Ext.extend(Ext.Panel, {
+    dockedItems: [{
+        xtype: 'toolbar',
+        title: 'View contact',
+        items: [{
+                text: 'Back',
+                ui: 'back',
+                listeners: {
+                    'tap': function () {
+                        Ext.dispatch({
+                        	// 컨트롤러의 index()함수에 연결된다.
+                            controller: contactApp.controllers.contacts,
+                            action: 'index',
+                            animation: {type:'slide', direction:'right'}
+                        });
+                    }
+                }
+            },
+            {xtype:'spacer'}]
+    }],
+    scroll: 'vertical',
+    items: [{
+        xtype: 'list',
+        store: [],
+        itemTpl: '{type} {value}'
+    }],
+
+    refreshContactData: function(record) {
+        Ext.regModel('ContactDetail', {
+            fields: ['type', 'value']
+        });
+
+    	Ext.each(this.items.items, function(item) {
+    		var tempRecord = [];
+			for (var i = 0; i < record.data.phoneNumbers.length; i++) {
+			    tempRecord.push(record.data.phoneNumbers[i]);
+			};
+			for (var i = 0; i < record.data.emails.length; i++) {
+			    tempRecord.push(record.data.emails[i]);
+			};
+		
+    		console.log("tempRecord : " + tempRecord);
+			item.store = new Ext.data.Store({
+			    model: 'ContactDetail',
+			    data : tempRecord,
+			});
+
+            item.update(tempRecord);
+        });
+        
+	    var toolbar = this.getDockedItems()[0];
+	    toolbar.setTitle(record.get('givenName') + ' ' + record.get('familyName'));
+	}
+});
+
+/**
+ * views/ContactList.js
+ */
+contactApp.views.ContactList = Ext.extend(Ext.Panel, {
+    dockedItems: [{
+        xtype: 'toolbar',
+        title: 'Contacts'
+    }],
+    layout: 'fit',
+    items: [{
+        xtype: 'list',
+        // models을 지정한다.
+        store: contactApp.stores.contacts,
+        itemTpl: '{givenName} {familyName}',
+        onItemDisclosure: function (record) {
+            Ext.dispatch({
+            	// 컨트롤러의 show()함수에 연결된다.
+                controller: contactApp.controllers.contacts,
+                action: 'show',
+                id: record.getId()
+            });
+        }
+    }],
+    initComponent: function() {
+        contactApp.stores.contacts.load();
+        contactApp.views.ContactList.superclass.initComponent.apply(this, arguments);
+    }
+});
+
+/**
+ * views/Viewport.js is
+ */
+contactApp.views.Viewport = Ext.extend(Ext.Panel, {
+    fullscreen: true,
+    layout: 'card',
+    cardSwitchAnimation: 'slide',
+    initComponent: function() {
+        Ext.apply(contactApp.views, {
+            contactList: new contactApp.views.ContactList(),
+            contactDetail: new contactApp.views.ContactDetail()
+        });
+        Ext.apply(this, {
+            items: [
+                contactApp.views.contactList,
+                contactApp.views.contactDetail
+            ]
+        });
+        contactApp.views.Viewport.superclass.initComponent.apply(this, arguments);
+    }
+});
+	  </script>
+	  <script type="text/javascript">
+	  // http://www.sencha.com/learn/a-sencha-touch-mvc-application-with-phonegap
+	  // https://github.com/senchalearn/phonegapcontacts/blob/master/www/app/controllers/contacts.js
+	        if(navigator.userAgent.toLowerCase().indexOf('chrome') != -1) {
+	            device = {};
+                contactApp.mainLaunch;
+	        } else {
+                document.addEventListener("deviceready", contactApp.mainLaunch, false);
+            }
+      </script>
+  </head>
+  <body> 
+  </body>
+</html>
