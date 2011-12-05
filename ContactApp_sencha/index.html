@@ -67,10 +67,10 @@
 				                total  : contacts.length,
 				                loaded : true
 				            });
-				            //announce success
+
 				            operation.setSuccessful();
 				            operation.setCompleted();
-				            //finish with callback
+
 				            if (typeof callback == "function") {
 				                callback.call(scope || thisProxy, operation);
 				            }
@@ -78,7 +78,6 @@
 						    navigator.contacts.find(
 						        ['id', 'name', 'emails', 'phoneNumbers'],
 						        function(deviceContacts) {
-						            //loop over deviceContacts and create Contact model instances
 						            var contacts = [];
 						            for (var i = 0; i < deviceContacts.length; i++) {
 						                var deviceContact = deviceContacts[ i ];
@@ -92,16 +91,16 @@
 						                contact.deviceContact = deviceContact;
 						                contacts.push(contact);
 						            }
-						            //return model instances in a result set
+
 						            operation.resultSet = new Ext.data.ResultSet({
 						                records: contacts,
 						                total  : contacts.length,
 						                loaded : true
 						            });
-						            //announce success
+
 						            operation.setSuccessful();
 						            operation.setCompleted();
-						            //finish with callback
+
 						            if (typeof callback == "function") {
 						                callback.call(scope || thisProxy, operation);
 						            }
@@ -140,7 +139,6 @@
 		                listeners: {
 		                    'tap': function () {
 		                        Ext.dispatch({
-		                        	// 컨트롤러의 index()함수에 연결된다.
 		                            controller: contactApp.controllers.contacts,
 		                            action: 'index',
 		                            animation: {type:'slide', direction:'right'}
@@ -194,7 +192,6 @@
 			        itemTpl: '{givenName} {familyName}',
 			        onItemDisclosure: function (record) {
 			            Ext.dispatch({
-			            	// 컨트롤러의 show()함수에 연결된다.
 			                controller: contactApp.controllers.contacts,
 			                action: 'show',
 			                id: record.getId()
