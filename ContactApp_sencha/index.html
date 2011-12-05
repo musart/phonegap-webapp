@@ -10,12 +10,10 @@
 			Ext.regApplication({
 			    name: 'contactApp',
 			    launch: function() {
-			    	console.log("launch");
 			        this.launched = true;
 			        this.mainLaunch();
 			    },
 			    mainLaunch: function() {
-			    console.log("mainlaunch");
 			        if (!device || !this.launched) {return;}
 			        this.views.viewport = new this.views.Viewport();
 			    }
@@ -28,7 +26,6 @@
 			        );
 			    },
 			    show: function(options) {
-			    console.log("controller::show() is called");
 				    var id = parseInt(options.id);
 					var contact = contactApp.stores.contacts.getById(id);
 				    if (contact) {
@@ -109,7 +106,7 @@
 						                callback.call(scope || thisProxy, operation);
 						            }
 						        },
-						        function (e) { console.log('Error fetching contacts'); },
+						        function (e) { console.log('에러 발생'); },
 						        {multiple: true}
 						    );
 					    }
@@ -172,8 +169,7 @@
 					for (var i = 0; i < record.data.emails.length; i++) {
 					    tempRecord.push(record.data.emails[i]);
 					};
-				
-		    		console.log("tempRecord : " + tempRecord);
+
 					this.items.items[0].store = new Ext.data.Store({
 					    model: 'ContactDetail',
 					    data : tempRecord,
@@ -194,7 +190,6 @@
 			    layout: 'fit',
 			    items: [{
 			        xtype: 'list',
-			        // models을 지정한다.
 			        store: contactApp.stores.contacts,
 			        itemTpl: '{givenName} {familyName}',
 			        onItemDisclosure: function (record) {
@@ -233,11 +228,9 @@
 	  </script>
 	  <script type="text/javascript">
 	        if(!Ext.is.Phone) {
-	        console.log("not phone");
 	            device = {};
                 contactApp.mainLaunch();
 	        } else {
-	        console.log("phone");
                 document.addEventListener("deviceready", contactApp.mainLaunch, false);
             }
       </script>
