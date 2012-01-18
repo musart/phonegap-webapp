@@ -1,15 +1,15 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<meta name="viewport" content="width=320; user-scalable=no" />
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-		<title>ContactApp</title>
-		
-		<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
-		<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-		<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
-		<script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
-		<script type="text/javascript">
+    <head>
+        <meta name="viewport" content="width=320; user-scalable=no" />
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+        <title>ContactApp</title>
+        
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+        <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+        <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+        <script type="text/javascript">
             var contacts = [];
             
             function init() {
@@ -18,59 +18,59 @@
             
             function getContactList() {
                 navigator.contacts.find(
-					['id', 'name', 'emails', 'phoneNumbers'],
-					function(deviceContacts) {
-						contacts = deviceContacts;
+                    ['id', 'name', 'emails', 'phoneNumbers'],
+                    function(deviceContacts) {
+                        contacts = deviceContacts;
 
-						var list = $('#content-contactlist');
-						list.html("");
-						$.each(contacts, function(key, val) {
-							var aTag = document.createElement("a");
-							aTag.href = "javascript:showContactDetailPage("+val.id+")";
-							aTag.appendChild(document.createTextNode("["+val.id+"]"+val.name.familyName+" "+val.name.givenName));
-							list.append($(document.createElement('li')).append(aTag));
-						});
-						list.listview("destroy").listview();
-					},
-					function (e) {
-						alert('에러 발생');
-					},
-					{multiple: true}
-				);
-			}
+                        var list = $('#content-contactlist');
+                        list.html("");
+                        $.each(contacts, function(key, val) {
+                            var aTag = document.createElement("a");
+                            aTag.href = "javascript:showContactDetailPage("+val.id+")";
+                            aTag.appendChild(document.createTextNode("["+val.id+"]"+val.name.familyName+" "+val.name.givenName));
+                            list.append($(document.createElement('li')).append(aTag));
+                        });
+                        list.listview("destroy").listview();
+                    },
+                    function (e) {
+                        alert('에러 발생');
+                    },
+                    {multiple: true}
+                );
+            }
             
-			function showContactDetailPage(contactId) {
-				$.mobile.changePage("#page-contactdetail", "none");
-				
-				$.each(contacts, function(key, val) {
+            function showContactDetailPage(contactId) {
+                $.mobile.changePage("#page-contactdetail", "none");
+                
+                $.each(contacts, function(key, val) {
                    
-					if(val != "" && val.id == parseInt(contactId)) {
-						var list = $('#content-contactdetail');
-						list.html("");
+                    if(val != "" && val.id == parseInt(contactId)) {
+                        var list = $('#content-contactdetail');
+                        list.html("");
                        
-						list.append($(document.createElement('li')).html("연락처 ID : " + val.id));
-						if(val.name.familyName != undefined || val.name.givenName != undefined) {
-							list.append($(document.createElement('li')).html("이름 : " + val.name.familyName + " " + val.name.givenName));
-						}
-						if(val.phoneNumbers != undefined) {
-							for (var i in val.phoneNumbers) {
-								list.append($(document.createElement('li')).html(val.phoneNumbers[i].type + " : " + val.phoneNumbers[i].value));
-							}
-						}
-						if(val.emails != undefined) {
-							for (var i in val.emails) {
-								list.append($(document.createElement('li')).html(val.emails[i].type + " : " + val.emails[i].value));
-							}
-						}
+                        list.append($(document.createElement('li')).html("연락처 ID : " + val.id));
+                        if(val.name.familyName != undefined || val.name.givenName != undefined) {
+                            list.append($(document.createElement('li')).html("이름 : " + val.name.familyName + " " + val.name.givenName));
+                        }
+                        if(val.phoneNumbers != undefined) {
+                            for (var i in val.phoneNumbers) {
+                                list.append($(document.createElement('li')).html(val.phoneNumbers[i].type + " : " + val.phoneNumbers[i].value));
+                            }
+                        }
+                        if(val.emails != undefined) {
+                            for (var i in val.emails) {
+                                list.append($(document.createElement('li')).html(val.emails[i].type + " : " + val.emails[i].value));
+                            }
+                        }
                        
-						list.listview("destroy").listview();
-						return;
-					}
-				});
-			}
-		</script>
-	</head>
-	<body onload="init();">
+                        list.listview("destroy").listview();
+                        return;
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body onload="init();">
         
         <div data-role="page" id="page-contactlist">
             <div data-role="header" data-position="fixed"> 
@@ -81,7 +81,7 @@
                 <ul data-role="listview" data-inset="true" id="content-contactlist">
                     로딩중.
                 </ul> 
-            </div>		
+            </div>        
         </div>
         
         <div data-role="page" id="page-contactdetail">
@@ -94,8 +94,8 @@
                 <ul data-role="listview" data-inset="true" id="content-contactdetail">
                     로딩중.
                 </ul> 
-            </div>		
+            </div>        
         </div>
 
-	</body>
+    </body>
 </html>

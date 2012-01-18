@@ -17,7 +17,7 @@
   </style>
   <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>  
   <script>
-  var gNotes = [ {
+    var gNotes = [ {
       Name : "Do",
       fileName : "Xylophone_Note_C.wav",
       color : "red",
@@ -120,148 +120,7 @@
   </script>
 </head>
 <body>
-	<div id=title>실로폰 어플리케이션</div>
+  <div id=title>실로폰 어플리케이션</div>
   <table id=xylophone width=320px />
 </body>
 </html>
-
-<!--
-<html>
-<head>
-    <meta name="viewport" content="width=320; user-scalable=no" />
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <title>XylophoneApp</title>
-    <style type="text/css">
-        body {
-            margin:0px;
-            border:0px;
-        }
-        #title {
-            background:#eee;
-            font-size:1.6em;
-            text-align:center;
-            padding:20px 0px 20px 0px;
-        }
-    </style>
-    <script type="text/javascript" charset="utf-8" src="phonegap-1.3.0.js"></script>    
-    <script>
-    var gNotes = [
-        {
-            Name : "Do",
-            fileName : "Xylophone_Single_Note_C.wav",
-            color : "red",
-            width : 320,
-        },
-        {
-            Name : "Re",
-            fileName : "Xylophone_Single_Note_D.wav",
-            color : "orange",
-            width : 300,
-        },
-        {
-            Name : "Mi",
-            fileName : "Xylophone_Single_Note_E.wav",
-            color : "yellow",
-            width : 280,
-        },
-        {
-            Name : "Fa",
-            fileName : "Xylophone_Single_Note_F.wav",
-            color : "seagreen",
-            width : 260,
-        },
-        {
-            Name : "Sol",
-            fileName : "Xylophone_Single_Note_G.wav",
-            color : "green",
-            width : 240,
-        },
-        {
-            Name : "La",
-            fileName : "Xylophone_Single_Note_A.wav",
-            color : "skyblue",
-            width : 220,
-        },
-        {
-            Name : "Ti",
-            fileName : "Xylophone_Single_Note_B.wav",
-            color : "blue",
-            width : 200,
-        },
-        {
-            Name : "Do",
-            fileName : "Xylophone_Single_Note_C_Oct.wav",
-            color : "purple",
-            width : 180,
-        }
-    ];
-    
-    document.addEventListener("deviceready", init, true);
-    //window.onload = init;
-
-    function init() {
-        for(var i in gNotes) {
-            console.log(gNotes[i].Name);
-            gXylophone = document.getElementById("xylophone");
-            gXylophone.cellPadding = "0";
-            gXylophone.cellSpacing = "0";
-                        
-            var tr = document.createElement("tr");
-            var td = document.createElement("td");
-            td.appendChild(createSingleNote(gNotes[i]));
-            tr.appendChild(td);
-
-            gXylophone.appendChild(tr);
-        }
-    }
-    
-    function createSingleNote(singleNote) {
-        var table = document.createElement("table");
-        table.setAttribute("align", "center");
-        table.setAttribute("style", "background-color:" + singleNote.color);
-        // for Android
-        table.setAttribute("onclick", "playAudio('/android_asset/www/"+ singleNote.fileName + "');");
-        // for iOS
-        //table.setAttribute("onclick", "playAudio('./"+ singleNote.fileName + "');");
-        
-        var tr = document.createElement("tr");
-        tr.setAttribute("style", "height:50px");
-        var td = document.createElement("td");
-        
-        td.setAttribute("style", "width:" + singleNote.width.toString() + "px");
-        td.appendChild(document.createTextNode(singleNote.Name));
-        tr.appendChild(td);
-        table.appendChild(tr);
-        return table;
-    }
-    
-    var gMedia = [];
-    
-    function playAudio(src) {
-    	console.log("playAudio:" + src);
-    	
-    	if( gMedia[src] == null) {
-    		console.log("create audio:" + src);
-	        gMedia[src] = new Media(src, onSuccess, onError);
-	    } else {
-	    	gMedia[src].stop();
-	    }
-        gMedia[src].play();
-    }
-    
-    function onSuccess() {
-        console.log("playAudio():Audio Success");
-    }
-
-    function onError(error) {
-        console.log('code: '    + error.code    + '\n' + 
-              'message: ' + error.message + '\n');
-    }
-    </script>
-</head>
-<body>
-	<div id=title>실로폰 어플리케이션</div>
-    <table id=xylophone width=320px />
-</body>
-</html>
--->
