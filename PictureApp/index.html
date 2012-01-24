@@ -26,21 +26,21 @@
             }
         
             function getPicture(row, col) {
-                // get 'tr' node
+                // 'tr' 노드 얻기
                 var currentNode = document.getElementById("PictureList_" + row + "_" + col);
                     
-                // remove child
+                // 자식 노드 제거
                 currentNode.removeChild(currentNode.getElementsByTagName('a')[0]);
                     
-                // add child
+                // 자식 노드 추가
                 currentNode.appendChild(document.createTextNode("로딩중"));
                         
                 navigator.camera.getPicture(
                     function(imageData) {
-                        // remove child
+                        // 자식 노드 제거
                         currentNode.removeChild(currentNode.firstChild);
                     
-                        // append child
+                        // 자식 노드 추가
                         var image = document.createElement('img');
                         image.setAttribute("style", "height:75px; width:75px;");
                         image.src = "data:image/jpeg;base64," + imageData;
@@ -53,10 +53,10 @@
                         currentNode.appendChild(/*image*/aTag);
                     },
                     function(message) {
-                        // remove child
+                        // 자식 노드 제거
                         currentNode.removeChild(currentNode.firstChild);
                     
-                        // append child
+                        // 자식 노드 추가
                         currentNode.appendChild(document.createTextNode("얻기 실패"));
                     },
                     {
@@ -71,14 +71,14 @@
                 hidePage("PictureListBody");
                 showPage("PictureViewBody");
                 
-                // create back button
+                // 이전 버튼 생성
                 var aTag = document.createElement("a");
                 aTag.href = "#";
                 aTag.setAttribute("onclick", "gotoPictureList();");
                 aTag.appendChild(document.createTextNode("사진 리스트로 이동"));
                 document.getElementById("PictureViewBody").appendChild(aTag);
                 
-                // show picture
+                // 사진 보이기
                 var image = document.createElement('img');
                 image.setAttribute("style", "width:100%;");
                 image.src = pictureData;
@@ -89,7 +89,7 @@
                 hidePage("PictureViewBody");
                 showPage("PictureListBody");
                 
-                // remove all child nodes
+                // 모든 자식 노드 제거
                 var node = document.getElementById("PictureViewBody");
                 while (node.hasChildNodes()) {
                     node.removeChild(node.lastChild);
